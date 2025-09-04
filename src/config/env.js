@@ -94,8 +94,9 @@ try {
   validateEnv()
 } catch (error) {
   console.error('Environment validation failed:', error.message)
-  // In development, we can continue with warnings
-  if (env.app.isProduction) {
+  // During build time or in development, we can continue with warnings
+  // Only throw in production runtime (not build time)
+  if (env.app.isProduction && typeof window !== 'undefined') {
     throw error
   }
 }
