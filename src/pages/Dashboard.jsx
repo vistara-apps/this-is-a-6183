@@ -38,7 +38,7 @@ const Dashboard = () => {
         <div>
           <h1 className="text-3xl font-bold text-text-primary">Welcome back!</h1>
           <p className="text-text-secondary mt-1">
-            Here's what's happening with your ad campaigns today.
+            Here&apos;s what&apos;s happening with your ad campaigns today.
           </p>
         </div>
         <Link

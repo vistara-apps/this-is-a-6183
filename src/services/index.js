@@ -3,7 +3,12 @@
  * Central export point for all service modules
  */
 
-export { default as SupabaseService } from './supabaseService.js'
+import supabaseServiceInstance from './supabaseService.js'
+import openaiServiceInstance from './openaiService.js'
+import socialMediaServiceInstance from './socialMediaService.js'
+import stripeServiceInstance from './stripeService.js'
+
+export { default as supabaseService } from './supabaseService.js'
 export { default as openaiService } from './openaiService.js'
 export { default as socialMediaService } from './socialMediaService.js'
 export { default as stripeService } from './stripeService.js'
@@ -18,12 +23,12 @@ export { StripeService } from './stripeService.js'
 export const checkServiceAvailability = () => {
   return {
     supabase: true, // Always available as it's required
-    openai: openaiService.isAvailable(),
+    openai: openaiServiceInstance.isAvailable(),
     socialMedia: {
-      instagram: socialMediaService.getAvailablePlatforms().instagram,
-      tiktok: socialMediaService.getAvailablePlatforms().tiktok
+      instagram: socialMediaServiceInstance.getAvailablePlatforms().instagram,
+      tiktok: socialMediaServiceInstance.getAvailablePlatforms().tiktok
     },
-    stripe: stripeService.isAvailable()
+    stripe: stripeServiceInstance.isAvailable()
   }
 }
 
@@ -38,7 +43,7 @@ export const checkServiceHealth = async () => {
 
   // Check Supabase connection
   try {
-    const { data, error } = await SupabaseService.getCurrentUser()
+    const { data, error } = await supabaseServiceInstance.getCurrentUser()
     health.supabase.status = error ? 'error' : 'healthy'
     health.supabase.error = error?.message || null
   } catch (error) {
@@ -48,8 +53,8 @@ export const checkServiceHealth = async () => {
 
   // Check OpenAI availability
   try {
-    health.openai.status = openaiService.isAvailable() ? 'healthy' : 'disabled'
-    if (!openaiService.isAvailable()) {
+    health.openai.status = openaiServiceInstance.isAvailable() ? 'healthy' : 'disabled'
+    if (!openaiServiceInstance.isAvailable()) {
       health.openai.error = 'OpenAI API key not configured'
     }
   } catch (error) {
@@ -59,7 +64,7 @@ export const checkServiceHealth = async () => {
 
   // Check Social Media services
   try {
-    const platforms = socialMediaService.getAvailablePlatforms()
+    const platforms = socialMediaServiceInstance.getAvailablePlatforms()
     health.socialMedia.status = (platforms.instagram || platforms.tiktok) ? 'healthy' : 'disabled'
     if (!platforms.instagram && !platforms.tiktok) {
       health.socialMedia.error = 'No social media platforms configured'
@@ -71,8 +76,8 @@ export const checkServiceHealth = async () => {
 
   // Check Stripe availability
   try {
-    health.stripe.status = stripeService.isAvailable() ? 'healthy' : 'disabled'
-    if (!stripeService.isAvailable()) {
+    health.stripe.status = stripeServiceInstance.isAvailable() ? 'healthy' : 'disabled'
+    if (!stripeServiceInstance.isAvailable()) {
       health.stripe.error = 'Stripe not configured or not initialized'
     }
   } catch (error) {
